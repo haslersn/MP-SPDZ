@@ -100,8 +100,10 @@ public:
 
   ifstream private_input;
   ifstream public_input;
+  ifstream share_input;
   ofstream public_output;
   ofstream private_output;
+  ofstream share_output;
 
   int sent, rounds;
 

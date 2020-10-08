@@ -186,6 +186,8 @@ enum
     CONDPRINTSTR = 0xBF,
     PRINTFLOATPREC = 0xE0,
     CONDPRINTPLAIN = 0xE1,
+    OUTPUTSHARE = 0xE6,
+    INPUTSHARE = 0xE7,
 
     // GF(2^n) versions
     

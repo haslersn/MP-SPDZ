@@ -1151,6 +1151,20 @@ class rand(base.Instruction):
     code = base.opcodes['RAND']
     arg_format = ['ciw','ci']
 
+# TODO (haslersn): Does @base.gf2n work?
+@base.vectorize
+class output_share(base.Instruction):
+    __slots__ = []
+    code = base.opcodes['OUTPUTSHARE']
+    arg_format = ['s']
+
+# TODO (haslersn): Does @base.gf2n work?
+@base.vectorize
+class input_share(base.Instruction):
+    __slots__ = []
+    code = base.opcodes['INPUTSHARE']
+    arg_format = ['sw']
+
 ###
 ### Integer operations
 ### 

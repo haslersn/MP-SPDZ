@@ -166,6 +166,8 @@ void BaseInstruction::parse_operands(istream& s, int pos, int file_pos)
       case PUBINPUT:
       case RAWOUTPUT:
       case GRAWOUTPUT:
+      case OUTPUTSHARE:
+      case INPUTSHARE:
       case PRINTCHRINT:
       case PRINTSTRINT:
       case PRINTINT:
@@ -1761,6 +1763,12 @@ inline void Instruction::execute(Processor<sint, sgf2n>& Proc) const
         break;
       case GSTOPPRIVATEOUTPUT:
         Proc.privateOutput2.stop(n,r[0],r[1]);
+        break;
+      case OUTPUTSHARE:
+        Proc.read_Sp(r[0]).output(Proc.share_output, false);
+        break;
+      case INPUTSHARE:
+        Proc.get_Sp_ref(r[0]).input(Proc.share_input, false);
         break;
       case PREP:
         Procp.DataF.get(Proc.Procp.get_S(), r, start, size);

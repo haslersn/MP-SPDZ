@@ -1699,6 +1699,23 @@ class _secret(_register):
         stopprivateoutput(res._v, masked.reveal(), player)
         return res
 
+    @set_instruction_type
+    def output_share(self):
+        """ For secret-sharing based protocols: All players output their share.
+        Share written to ``Player-Data/Share-Output-<player>``
+        """
+        output_share(self)
+
+    @classmethod
+    @set_instruction_type
+    def input_share(cls):
+        """ For secret-sharing based protocols: All players input their share.
+        Share read from ``Player-Data/Share-Input-<player>``
+        """
+        res = cls()
+        input_share(res)
+        return res
+
 
 class sint(_secret, _int):
     """

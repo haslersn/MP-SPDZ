@@ -74,8 +74,10 @@ Processor<sint, sgf2n>::Processor(int thread_num,Player& P,
   public_input.open(get_filename("Programs/Public-Input/",false).c_str());
   private_input_filename = (get_filename(PREP_DIR "Private-Input-",true));
   private_input.open(private_input_filename.c_str());
+  share_input.open(get_filename(PREP_DIR "Share-Input-",true).c_str());
   public_output.open(get_filename(PREP_DIR "Public-Output-",true).c_str(), ios_base::out);
   private_output.open(get_filename(PREP_DIR "Private-Output-",true).c_str(), ios_base::out);
+  share_output.open(get_filename(PREP_DIR "Share-Output-",true).c_str(), ios_base::out);
 
   open_input_file(P.my_num(), thread_num);
 

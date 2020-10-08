@@ -18,6 +18,7 @@ void Share<T>::read_or_generate_mac_key(string directory, const Names& N,
 #endif
         SeededPRNG G;
         key.randomize(G);
+        write_mac_key(directory, N.my_num(), N.num_players(), key);
     }
 }
 
