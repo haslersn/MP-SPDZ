@@ -42,7 +42,7 @@ endif
 # Default for MAX_MOD_SZ is 10, which suffices for all Overdrive protocols
 # MOD = -DMAX_MOD_SZ=10 -DGFP_MOD_SZ=2
 
-LDLIBS = -lmpirxx -lmpir -lsodium $(MY_LDLIBS)
+LDLIBS = -lmpirxx -lmpir -lsodium -lcassandra $(MY_LDLIBS)
 LDLIBS += -lboost_system -lssl -lcrypto
 
 ifeq ($(USE_NTL),1)
