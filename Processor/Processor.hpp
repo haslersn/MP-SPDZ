@@ -13,6 +13,7 @@
 
 #include <sodium.h>
 #include <string>
+#include <random>
 
 template <class T>
 SubProcessor<T>::SubProcessor(ArithmeticProcessor& Proc, typename T::MAC_Check& MC,
@@ -55,21 +56,38 @@ SubProcessor<T>::~SubProcessor()
 #endif
 }
 
-template<class sint, class sgf2n>
-Processor<sint, sgf2n>::Processor(int thread_num,Player& P,
-        typename sgf2n::MAC_Check& MC2,typename sint::MAC_Check& MCp,
-        Machine<sint, sgf2n>& machine,
-        const Program& program)
-: ArithmeticProcessor(machine.opts, thread_num),DataF(machine, &Procp, &Proc2),P(P),
-  MC2(MC2),MCp(MCp),machine(machine),
-  share_thread(machine.get_N(), machine.opts, P, machine.get_bit_mac_key(), DataF.usage),
-  Procb(machine.bit_memories),
-  Proc2(*this,MC2,DataF.DataF2,P),Procp(*this,MCp,DataF.DataFp,P),
-  privateOutput2(Proc2),privateOutputp(Procp),
-  external_clients(P.my_num()),
-  binary_file_io(Binary_File_IO())
+template <class sint, class sgf2n>
+Processor<sint, sgf2n>::Processor(int thread_num, Player &P, typename sgf2n::MAC_Check &MC2,
+                                  typename sint::MAC_Check &MCp, Machine<sint, sgf2n> &machine,
+                                  const Program &program)
+    : ArithmeticProcessor(machine.opts, thread_num), m_cass_cluster(cass_cluster_new()),
+      m_cass_session(cass_session_new()), DataF(machine, &Procp, &Proc2), P(P), MC2(MC2), MCp(MCp),
+      machine(machine),
+      share_thread(machine.get_N(), machine.opts, P, machine.get_bit_mac_key(), DataF.usage),
+      Procb(machine.bit_memories), Proc2(*this, MC2, DataF.DataF2, P),
+      Procp(*this, MCp, DataF.DataFp, P), privateOutput2(Proc2), privateOutputp(Procp),
+      external_clients(P.my_num()), binary_file_io(Binary_File_IO())
 {
   reset(program,0);
+
+  cass_log_set_level(CASS_LOG_DEBUG);
+  m_cass_cluster.set_contact_points("127.0.0.1");
+  // The result value itself (in this case always `nullptr`) is not interesting, but get_result()
+  // waits for the future to be ready and throws if there was an error.
+  m_cass_session.connect(m_cass_cluster).get_result();
+  std::string cql;
+
+  cql = "CREATE KEYSPACE IF NOT EXISTS player_";
+  cql += std::to_string(P.my_num());
+  cql += " WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 }";
+  m_cass_session.execute(CsandraStatement::make(cql.c_str(), 0)).get_result();
+
+  cql = std::string{"USE player_"};
+  cql += std::to_string(P.my_num());
+  m_cass_session.execute(CsandraStatement::make(cql.c_str(), 0)).get_result();
+
+  cql = "CREATE TABLE IF NOT EXISTS my_table (key TEXT PRIMARY KEY, share TEXT)";
+  m_cass_session.execute(CsandraStatement::make(cql.c_str(), 0)).get_result();
 
   public_input.open(get_filename("Programs/Public-Input/",false).c_str());
   private_input_filename = (get_filename(PREP_DIR "Private-Input-",true));
@@ -359,6 +377,11 @@ void Processor<sint, sgf2n>::write_shares_to_file(const vector<int>& data_regist
   }
 
   binary_file_io.write_to_file(filename, inpbuf);
+}
+
+template<class sint, class sgf2n>
+CsandraSession& Processor<sint, sgf2n>::csandra_session() {
+  return m_cass_session;
 }
 
 template <class T>

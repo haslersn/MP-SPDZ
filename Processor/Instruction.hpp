@@ -144,6 +144,8 @@ void BaseInstruction::parse_operands(istream& s, int pos, int file_pos)
       case PROTECTMEMINT:
       case DABIT:
       case SHUFFLE:
+      case OUTPUTCASS:
+      case INPUTCASS:
         r[0]=get_int(s);
         r[1]=get_int(s);
         break;
@@ -1769,6 +1771,26 @@ inline void Instruction::execute(Processor<sint, sgf2n>& Proc) const
         break;
       case INPUTSHARE:
         Proc.get_Sp_ref(r[0]).input(Proc.share_input, false);
+        break;
+      case OUTPUTCASS:
+      {
+        auto statement = CsandraStatement::make("INSERT INTO my_table (key, share) VALUES (?, ?)", 2);
+        std::string tmp;
+        {
+          std::ostringstream oss;
+          Proc.read_Cp(r[0]).output(oss, true);
+          statement.bind(0, (tmp = oss.str()).c_str());
+        }
+        {
+          std::ostringstream oss;
+          Proc.read_Sp(r[1]).output(oss, true);
+          statement.bind(1, (tmp = oss.str()).c_str());
+        }
+        Proc.csandra_session().execute(statement).get_result();
+        break;
+      }
+      case INPUTCASS:
+        // TODO (haslersn): Read from Cassandra
         break;
       case PREP:
         Procp.DataF.get(Proc.Procp.get_S(), r, start, size);

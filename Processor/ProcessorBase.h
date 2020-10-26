@@ -24,8 +24,14 @@ protected:
   int arg;
 
 public:
+  virtual ~ProcessorBase() = default;
+
   void pushi(long x) { stacki.push(x); }
-  void popi(long& x) { x = stacki.top(); stacki.pop(); }
+  void popi(long &x)
+  {
+    x = stacki.top();
+    stacki.pop();
+  }
 
   int get_arg() const
     {

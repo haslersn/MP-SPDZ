@@ -188,6 +188,8 @@ enum
     CONDPRINTPLAIN = 0xE1,
     OUTPUTSHARE = 0xE6,
     INPUTSHARE = 0xE7,
+    OUTPUTCASS = 0xE8,
+    INPUTCASS = 0xE9,
 
     // GF(2^n) versions
     

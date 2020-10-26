@@ -5,21 +5,22 @@
 /* This is a representation of a processing element
  */
 
-#include "Math/Integer.h"
-#include "Exceptions/Exceptions.h"
-#include "Networking/Player.h"
-#include "Data_Files.h"
-#include "Input.h"
-#include "PrivateOutput.h"
-#include "ExternalClients.h"
 #include "Binary_File_IO.h"
-#include "Instruction.h"
-#include "ProcessorBase.h"
-#include "OnlineOptions.h"
-#include "Tools/SwitchableOutput.h"
-#include "Tools/CheckVector.h"
+#include "Data_Files.h"
+#include "Exceptions/Exceptions.h"
+#include "ExternalClients.h"
 #include "GC/Processor.h"
 #include "GC/ShareThread.h"
+#include "Input.h"
+#include "Instruction.h"
+#include "Math/Integer.h"
+#include "Networking/Player.h"
+#include "OnlineOptions.h"
+#include "PrivateOutput.h"
+#include "Processor/Csandra.hpp"
+#include "ProcessorBase.h"
+#include "Tools/CheckVector.h"
+#include "Tools/SwitchableOutput.h"
 
 class Program;
 
@@ -139,7 +140,10 @@ class Processor : public ArithmeticProcessor
   // Data structure used for reading/writing data to/from a socket (i.e. an external party to SPDZ)
   octetStream socket_stream;
 
-  public:
+  CsandraCluster m_cass_cluster;
+  CsandraSession m_cass_session;
+
+public:
   Data_Files<sint, sgf2n> DataF;
   Player& P;
   typename sgf2n::MAC_Check& MC2;
@@ -226,13 +230,14 @@ class Processor : public ArithmeticProcessor
   // Read and write secret numeric data to file (name hardcoded at present)
   void read_shares_from_file(int start_file_pos, int end_file_pos_register, const vector<int>& data_registers);
   void write_shares_to_file(const vector<int>& data_registers);
+
+  CsandraSession& csandra_session();
   
   // Print the processor state
   template<class T, class U>
   friend ostream& operator<<(ostream& s,const Processor<T, U>& P);
 
-  private:
-
+private:
   template<class T> friend class SPDZ;
   template<class T> friend class SubProcessor;
 };

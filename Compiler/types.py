@@ -1716,6 +1716,10 @@ class _secret(_register):
         input_share(res)
         return res
 
+    @set_instruction_type
+    def write_to_db(self, key):
+        write_to_db(key, self)
+
 
 class sint(_secret, _int):
     """

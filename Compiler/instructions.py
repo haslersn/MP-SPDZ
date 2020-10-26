@@ -1165,6 +1165,20 @@ class input_share(base.Instruction):
     code = base.opcodes['INPUTSHARE']
     arg_format = ['sw']
 
+# TODO (haslersn): Does @base.gf2n work?
+@base.vectorize
+class write_to_db(base.Instruction):
+    __slots__ = []
+    code = base.opcodes['OUTPUTCASS']
+    arg_format = ['c','s']
+
+# TODO (haslersn): Does @base.gf2n work?
+@base.vectorize
+class read_from_db(base.Instruction):
+    __slots__ = []
+    code = base.opcodes['INPUTCASS']
+    arg_format = ['c','s']
+
 ###
 ### Integer operations
 ### 

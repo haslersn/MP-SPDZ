@@ -188,6 +188,8 @@ opcodes = dict(
     CONDPRINTPLAIN = 0xE1,
     OUTPUTSHARE = 0xE6,
     INPUTSHARE = 0xE7,
+    OUTPUTCASS = 0xE8,
+    INPUTCASS = 0xE9,
     GBITDEC = 0x184,
     GBITCOM = 0x185,
     # Secure socket
