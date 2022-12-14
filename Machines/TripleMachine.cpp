@@ -212,6 +212,8 @@ void TripleMachine::run()
                 generators[i] = new_generator<Spdz2kShare<66, 64>>(setup, i, mac_keyz);
             else if (z2k == 66 and z2s == 48)
                 generators[i] = new_generator<Spdz2kShare<66, 48>>(setup, i, mac_keyz);
+            else if (z2k == 128 and z2s == 64)
+                generators[i] = new_generator<Spdz2kShare<128, 64>>(setup, i, mac_keyz);
             else
                 throw runtime_error("not compiled for k=" + to_string(z2k) + " and s=" + to_string(z2s));
         }

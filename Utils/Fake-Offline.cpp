@@ -581,6 +581,8 @@ int main(int argc, const char** argv)
         return params.generate<Spdz2kShare<64, 64>>();
       else if (k == 64 and s == 48)
         return params.generate<Spdz2kShare<64, 48>>();
+      else if (k == 128 and s == 64)
+        return params.generate<Spdz2kShare<128, 64>>();
       else
         throw runtime_error("not compiled for k=" + to_string(k) + " and s=" + to_string(s));
     }
